@@ -1,2 +1,7 @@
 venv/
 *.json
+.dvc/
+
+*.pyc
+
+.DS_Store
