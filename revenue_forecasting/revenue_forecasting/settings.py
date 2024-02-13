@@ -11,9 +11,18 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
 from pathlib import Path
+import os
+from dotenv import load_dotenv
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent.parent
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+dotenv_path = os.path.join(os.path.dirname(BASE_DIR), '.env')
+
+# Cargar las variables de entorno desde el archivo .env si existe
+if os.path.exists(dotenv_path):
+    load_dotenv(dotenv_path)
+
+# # Build paths inside the project like this: BASE_DIR / 'subdir'.
+# BASE_DIR = Path(__file__).resolve().parent.parent
 
 
 # Quick-start development settings - unsuitable for production
@@ -25,7 +34,7 @@ SECRET_KEY = 'django-insecure-e*664(m#%+0o@8f1z&$j*wtqvo2ggfeh9ywmog!$mdgqf=r3+z
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -38,7 +47,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'models',
-    'api'
+    'api',
+    'home'
 ]
 
 MIDDLEWARE = [
@@ -56,7 +66,7 @@ ROOT_URLCONF = 'revenue_forecasting.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -77,10 +87,10 @@ WSGI_APPLICATION = 'revenue_forecasting.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'revenue_db',
-        'USER': 'revenue_user',
-        'PASSWORD': 'posSql2680Hax',
-        'HOST': 'localhost',  
+        'NAME': os.getenv('POSTGRES_DB'),
+        'USER': os.getenv('POSTGRES_USER'),
+        'PASSWORD': os.getenv('POSTGRES_PASSWORD'),
+        'HOST': 'db',  
         'PORT': '5432',  
     }
 }
@@ -119,7 +129,9 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
